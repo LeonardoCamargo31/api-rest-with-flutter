@@ -30,17 +30,27 @@ class ProductModel {
     updatedAt = json['updatedAt'];
   }
 
+  // Map<String, dynamic> toJson() {
+  //   final Map<String, dynamic> data = <String, dynamic>{};
+  //   data['id'] = id;
+  //   data['title'] = title;
+  //   data['slug'] = slug;
+  //   data['price'] = price;
+  //   data['description'] = description;
+  //   data['images'] = images;
+  //   data['creationAt'] = creationAt;
+  //   data['updatedAt'] = updatedAt;
+  //   return data;
+  // }
+
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['title'] = title;
-    data['slug'] = slug;
-    data['price'] = price;
-    data['description'] = description;
-    data['images'] = images;
-    data['creationAt'] = creationAt;
-    data['updatedAt'] = updatedAt;
-    return data;
+    return {
+      'title': title,
+      'price': price,
+      'description': description,
+      'categoryId': 29,
+      'images': images,
+    };
   }
 
   // Método para criar um produto (para POST)
