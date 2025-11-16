@@ -8,18 +8,39 @@ import 'package:dio/dio.dart' hide Response;
 class UploadServiceRemote implements UploadService {
   @override
   Future<({String? imageUrl, Response result})> uploadImage(File imageFile) async {
-    final form = FormData.fromMap({
-      'file': await MultipartFile.fromFile(imageFile.path),
-    });
+    try {
+      final form = FormData.fromMap({
+        'file': await MultipartFile.fromFile(imageFile.path),
+      });
 
-    final result = await ApiClient.client.post(
-      '/api/v1/files/upload', 
-      data: form
-    );
+      final result = await ApiClient.client.post(
+        '/api/v1/files/upload', 
+        data: form
+      );
 
-    final imageUrl = result.data['location'] as String?;
+      final imageUrl = result.data['location'] as String?;
 
-    return (imageUrl: imageUrl, result: const Success());
+      return (imageUrl: imageUrl, result: const Success());
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400){
+        return (
+          imageUrl: null, 
+          result: const GeneralFailure(message: "Erros nos dados enviados")
+        );
+      } else if  (e.response?.statusCode == 404){
+        return (
+          imageUrl: null, 
+          result: const GeneralFailure(message: "Endpoint de upload não encontrado")
+        );
+      }
+      return (
+        imageUrl: null, 
+        result: const GeneralFailure(message: "Erro ao fazer upload da imagem")
+      );
+    }
+    catch (e) {
+      return (imageUrl: null, result: const GeneralFailure(message: "Erro ao fazer upload da imagem"));
+    }
   }
 }
 
